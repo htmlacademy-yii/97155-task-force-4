@@ -17,7 +17,7 @@ class Task
     private $executorId = null;
     private $customerId = null;
 
-    public $currentStatus = self::STATUS_NEW;
+    public $status = self::STATUS_NEW;
     public $availableActions = [];
 
     public function getStatusMap()
@@ -92,7 +92,7 @@ class Task
                 }
                 if ($currentUserId === $this->executorId) {
                     return [
-                        self::ACTION_FAILED
+                        self::ACTION_REFUSE
                     ];
                 }
         }
