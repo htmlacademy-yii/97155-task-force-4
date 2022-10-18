@@ -2,7 +2,7 @@
 
 class Task
 {
-    const STATUS_NEW = 'new';
+    public const STATUS_NEW = 'new';
     const STATUS_CANCELED = 'canceled';
     const STATUS_IN_PROGRESS = 'inprogress';
     const STATUS_DONE = 'done';
@@ -17,7 +17,7 @@ class Task
     private $executorId = null;
     private $customerId = null;
 
-    public $currentStatus = STATUS_NEW;
+    public $currentStatus = self::STATUS_NEW;
     public $availableActions = [];
 
     public function getStatusMap()
