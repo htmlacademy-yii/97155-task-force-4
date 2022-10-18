@@ -10,19 +10,24 @@ class Task
 
     const ACTION_RESPOND = 'respond';
     const ACTION_CANCEL = 'cancel';
-    const ACTION_EXECUTE = 'execute';
+    const ACTION_APPROVE = 'approve';
+    const ACTION_START = 'start';
     const ACTION_REFUSE = 'refuse';
 
+    private $executorId = null;
+    private $customerId = null;
+
     public $currentStatus = STATUS_NEW;
+    public $availableActions = [];
 
     public function getStatusMap()
     {
         $statusMap = [
-            'new' => 'Новое',
-            'canceled' => 'Отменено',
-            'inprogress' => 'В работе',
-            'done' => 'Выполнено',
-            'failed' => 'Провалено'
+            self::STATUS_NEW => 'Новое',
+            self::STATUS_CANCELED => 'Отменено',
+            self::STATUS_IN_PROGRESS => 'В работе',
+            self::STATUS_DONE => 'Выполнено',
+            self::STATUS_FAILED => 'Провалено'
         ];
 
         return $statusMap;
@@ -32,66 +37,67 @@ class Task
     public function getActionMap()
     {
         $actionMap = [
-            'respond' => 'Откликнуться',
-            'cancel' => 'Отменить',
-            'execute' => 'Выполнить',
-            'refuse' => 'Отказаться'
+            self::ACTION_RESPOND => 'Откликнуться',
+            self::ACTION_CANCEL => 'Отменить',
+            self::ACTION_APPROVE => 'Выполнить',
+            self::ACTION_START => 'Начать',
+            self::ACTION_REFUSE => 'Отказаться'
         ];
 
         return $actionMap;
 
     }
 
-    private $idExecutor = 0;
-    private $idCustomer = 0;
-
-    public function __construct($idExecutor, $idCustomer)
+    public function __construct($status, $customerId, $executorId = null)
     {
-        $this->idExecutor = $idExecutor;
-        $this->idCustomer = $idCustomer;
-        $this->currentStatus = $currentStatus;
+        $this->executorId = $executorId;
+        $this->customerId = $customerId;
+        $this->status = $status;
     }
 
-    public function getStatus($action)
+    public function getStatusAfterAction($action)
     {
-        if($action === $this->ACTION_RESPOND) {
-            $this->current_status = $this->STATUS_IN_PROGRESS;
+        switch ($action) {
+            case self::ACTION_RESPOND:
+                return self::STATUS_NEW;
+            case self::ACTION_CANCEL:
+                return self::STATUS_CANCELED;
+            case self::ACTION_APPROVE:
+                return self::STATUS_DONE;
+            case self::ACTION_REFUSE:
+                return self::STATUS_FAILED;
         }
 
-        if($action === $this->ACTION_CANCEL) {
-            $this->current_status = $this->STATUS_CANCELED;
-        }
-
-        if($action === $this->ACTION_EXECUTE) {
-            $this->current_status = $this->STATUS_DONE;
-        }
-
-        if($action === $this->ACTION_REFUSE) {
-            $this->current_status = $this->STATUS_FAILED;
-        }
-
-        return $this->current_status;
+        return null;
     }
 
-    public function geActions($status)
+    public function getAvailableActions($status, $currentUserId)
     {
-        if($action === $this->ACTION_RESPOND) {
-            $this->current_status = $this->STATUS_IN_PROGRESS;
+        switch ($status) {
+            case self::STATUS_NEW:
+                if ($currentUserId === $this->customerId) {
+                    return [
+                        self::ACTION_START,
+                        self::ACTION_CANCEL,
+                    ];
+                }
+                return [
+                    self::ACTION_RESPOND
+                ];
+            case self::STATUS_IN_PROGRESS:
+                if ($currentUserId === $this->customerId) {
+                    return [
+                        self::ACTION_APPROVE
+                    ];
+                }
+                if ($currentUserId === $this->executorId) {
+                    return [
+                        self::ACTION_FAILED
+                    ];
+                }
         }
 
-        if($action === $this->ACTION_CANCEL) {
-            $this->current_status = $this->STATUS_CANCELED;
-        }
-
-        if($action === $this->ACTION_EXECUTE) {
-            $this->current_status = $this->STATUS_DONE;
-        }
-
-        if($action === $this->ACTION_REFUSE) {
-            $this->current_status = $this->STATUS_FAILED;
-        }
-
-        return $this->current_status;
+        return [];
     }
 
 }
