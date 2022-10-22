@@ -1,0 +1,15 @@
+{
+    "name": "mike/97155-task-force-4",
+    "autoload": {
+        "psr-4": {
+            "Mike\\97155TaskForce4\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Михаил Воронков",
+            "email": "redvoronik@yandex.ru"
+        }
+    ],
+    "require": {}
+}
