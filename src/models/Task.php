@@ -1,4 +1,5 @@
 <?php
+namespace taskforce\models;
 
 class Task
 {
@@ -67,7 +68,6 @@ class Task
             case self::ACTION_REFUSE:
                 return self::STATUS_FAILED;
         }
-
         return null;
     }
 
@@ -96,7 +96,6 @@ class Task
                     ];
                 }
         }
-
         return [];
     }
 
